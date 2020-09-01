@@ -1,8 +1,9 @@
-import { NgModule } from '@angular/core';
+import {NgModule} from '@angular/core';
+import {DataproviderViewerComponent} from './dataprovider-viewer/dataprovider-viewer.component';
 
 @NgModule({
-  declarations: [],
+  declarations: [DataproviderViewerComponent],
   imports: [],
-  exports: []
+  exports: [DataproviderViewerComponent]
 })
-export class LibModule { }
+export class LibModule {}
