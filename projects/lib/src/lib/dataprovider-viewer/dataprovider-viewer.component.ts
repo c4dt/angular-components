@@ -8,20 +8,23 @@ type TableElement = number | Date | string
 type TableObject = Array<{ [_: string]: [ColumnType, TableElement] }>
 
 export class Table {
+  public readonly rows: List<List<string>>
+
   public constructor (
     public readonly types: List<ColumnType>,
     public readonly header: List<string>,
-    public readonly rows: List<List<string>>
+    rows: List<string[]>, // https://github.com/ng-packagr/ng-packagr/issues/1742
   ) {
     if (types.size !== header.size) {
       throw new Error('unconsistent width for types')
     }
 
     for (const row of rows) {
-      if (row.size !== header.size) {
+      if (row.length !== header.size) {
         throw new Error('unconsistent width')
       }
     }
+    this.rows = rows.map(l => List(l))
   }
 
   public toObject (): TableObject {
@@ -34,7 +37,7 @@ export class Table {
 }
 
 @Component({
-  selector: 'app-dataprovider-viewer',
+  selector: 'lib-dataprovider-viewer',
   templateUrl: './dataprovider-viewer.component.html'
 })
 export class DataproviderViewerComponent {

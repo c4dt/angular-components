@@ -2,14 +2,18 @@
   "name": "@c4dt/angular-components",
   "version": "0.0.1",
   "peerDependencies": {
-    "@angular/common": "^10.0.14",
-    "@angular/core": "^10.0.14",
+    "@angular/common": "^10.1.0",
+    "@angular/cdk": "^10.2.0",
+    "@angular/core": "^10.1.0",
+    "@angular/material": "^10.2.0",
     "immutable": "^4.0.0-rc.12"
   },
   "dependencies": {
     "tslib": "^2.0.0"
   },
   "devDependencies": {
+    "@angular/cdk": "^10.2.0",
+    "@angular/material": "^10.2.0",
     "immutable": "^4.0.0-rc.12"
   }
 }
