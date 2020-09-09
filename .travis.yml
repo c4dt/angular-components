@@ -1,0 +1,13 @@
+language: node_js
+node_js: node
+
+script:
+  - ( cd projects/lib && npm ci )
+  - npx ng build --prod
+
+before_deploy:
+  - echo "//registry.npmjs.org/:_authToken=${DEPLOY_NPM_TOKEN}" > "$HOME/.npmrc"
+deploy:
+  provider: script
+  script: cd dist/lib && npm version prerelease --preid=p`date +%Y%m%d%H%M%S` && npm publish --tag dev --access public
+  skip_cleanup: true
