@@ -11,3 +11,5 @@ deploy:
   provider: script
   script: cd dist/lib && npm version prerelease --preid=p`date +%Y%m%d%H%M%S` && npm publish --tag dev --access public
   skip_cleanup: true
+  on:
+    branch: main
