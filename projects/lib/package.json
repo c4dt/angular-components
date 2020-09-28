@@ -8,6 +8,7 @@
     "@angular/material": "^10.2.0",
     "angular-plotly.js": "^3.0.0",
     "immutable": "^4.0.0-rc.12",
+    "papaparse": "^5.3.0",
     "plotly.js": "^1.55.2",
     "vis-data": "^7.0.0",
     "vis-graph3d": "^6.0.0"
@@ -18,9 +19,11 @@
   "devDependencies": {
     "@angular/cdk": "^10.2.0",
     "@angular/material": "^10.2.0",
+    "@types/papaparse": "^5.2.2",
     "@types/plotly.js": "^1.50.18",
     "angular-plotly.js": "^3.0.0",
     "immutable": "^4.0.0-rc.12",
+    "papaparse": "^5.3.0",
     "plotly.js": "^1.55.2",
     "vis-data": "^7.0.0",
     "vis-graph3d": "^6.0.0",
