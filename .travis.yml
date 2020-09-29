@@ -2,8 +2,8 @@ language: node_js
 node_js: node
 
 before_script:
-  - npx eslint --ignore-pattern *.js .
   - npx prettier --check .
+  - npx eslint --ext ts . # TODO add -Werror
 script:
   - ( cd projects/lib && npm ci )
   - npx ng build --prod
