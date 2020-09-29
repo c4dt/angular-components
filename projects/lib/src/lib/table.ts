@@ -36,7 +36,7 @@ export class Table {
   }
 }
 
-export async function getAndParseCSV(url: URL): Promise<List<List<string>>> {
+async function getAndParseCSV(url: URL): Promise<List<List<string>>> {
   const results = await new Promise<csv.ParseResult<string[]>>(
     (resolve, reject) =>
       csv.parse(url.href, {
