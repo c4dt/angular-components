@@ -8,7 +8,7 @@ interface ColumnMapper<T> {
     results: List<number>
   ): [ResultType, Result] | undefined;
   forRow(value: string): T;
-  equals(other: any): boolean;
+  equals(other: ColumnType): boolean;
 }
 
 export class ColumnMultiplied implements ColumnMapper<number> {
@@ -67,7 +67,7 @@ export class ColumnMultiplied implements ColumnMapper<number> {
     throw new Error('unknown operation');
   }
 
-  equals(other: any): boolean {
+  equals(other: ColumnType): boolean {
     return other instanceof ColumnMultiplied && other.factor === this.factor;
   }
 }
@@ -92,7 +92,7 @@ abstract class ColumnDated implements ColumnMapper<Date> {
     return ret;
   }
 
-  forResults(_: any, results: List<number>): [ResultType, Date] {
+  forResults(_: OperationType, results: List<number>): [ResultType, Date] {
     const date = results.get(0);
     if (date === undefined) {
       throw new Error('weird shape for a date');
@@ -103,7 +103,7 @@ abstract class ColumnDated implements ColumnMapper<Date> {
     return [this.kind, ret];
   }
 
-  equals(other: any): boolean {
+  equals(other: ColumnType): boolean {
     return other instanceof ColumnDated && other.kind === this.kind;
   }
 }
@@ -142,7 +142,7 @@ export class ColumnRaw implements ColumnMapper<string> {
     return undefined;
   }
 
-  equals(other: any): boolean {
+  equals(other: ColumnType): boolean {
     return other instanceof ColumnRaw;
   }
 }

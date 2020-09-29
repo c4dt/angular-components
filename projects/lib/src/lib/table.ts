@@ -20,7 +20,7 @@ export class Table {
     if (firstColumn === undefined) throw new Error('no columns');
     const rowCount = firstColumn[2].size;
 
-    if (columns.shift().some(([_, __, rows]) => rows.size !== rowCount))
+    if (columns.shift().some((column) => column[2].size !== rowCount))
       throw new Error('unconsistent width');
   }
 

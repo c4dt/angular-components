@@ -21,10 +21,11 @@
       </ng-container>
     </h2>
   </ng-container>
-  <ng-container
-    *ngIf="plotlyGraph !== undefined"
-  >
-    <plotly-plot [data]="plotlyGraph.data" [layout]="plotlyGraph.layout"></plotly-plot>
+  <ng-container *ngIf="plotlyGraph !== undefined">
+    <plotly-plot
+      [data]="plotlyGraph.data"
+      [layout]="plotlyGraph.layout"
+    ></plotly-plot>
   </ng-container>
   <ng-container
     *ngIf="visGraphData !== undefined && visGraph3DOptions !== undefined"

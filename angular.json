@@ -36,12 +36,11 @@
               "projects/lib/tsconfig.lib.json",
               "projects/lib/tsconfig.spec.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         }
       }
-    }},
+    }
+  },
   "defaultProject": "lib"
 }
