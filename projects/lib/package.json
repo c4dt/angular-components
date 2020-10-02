@@ -1,6 +1,6 @@
 {
   "name": "@c4dt/angular-components",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "peerDependencies": {
     "@angular/common": "^10.1.0",
     "@angular/cdk": "^10.2.0",
