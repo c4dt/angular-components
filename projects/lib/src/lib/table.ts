@@ -41,7 +41,6 @@ async function getAndParseCSV(url: URL): Promise<List<List<string>>> {
     (resolve, reject) =>
       csv.parse(url.href, {
         download: true,
-        delimiter: '\t',
         skipEmptyLines: true,
         complete: resolve,
         error: reject,
