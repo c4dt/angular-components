@@ -47,13 +47,12 @@ async function getAndParseCSV(url: URL): Promise<List<List<string>>> {
       })
   );
   for (const err of results.errors)
-    throw new Error(`when CSV parsing: ${err.message}`);
+    throw new Error(`parse as CSV: ${err.message}`);
 
   const dataset = List(results.data.map((row: string[]) => List(row)));
 
   const firstLine = dataset.get(0);
-  if (firstLine === undefined)
-    throw new Error("dataset's types should contain a single line");
+  if (firstLine === undefined) throw new Error('dataset is empty');
 
   if (dataset.shift().some((line) => line.size !== firstLine.size))
     throw new Error("dataset isn't rectangular");
@@ -69,7 +68,7 @@ export async function fetchDataset(
   const datasetCSV = getAndParseCSV(datasetURL);
 
   const header = (await datasetCSV).get(0);
-  if (header === undefined) throw new Error("dataset doesn't have any row");
+  if (header === undefined) throw new Error('dataset is empty');
 
   const typesStr = (await typesCSV).get(0);
   if ((await typesCSV).size !== 1 || typesStr === undefined)
@@ -84,7 +83,7 @@ export async function fetchDataset(
     if (numericMatches !== null) {
       const value = Number.parseInt(numericMatches[1]);
       if (Number.isNaN(value))
-        throw new Error(`unable to parse as int: ${numericMatches[1]}`);
+        throw new Error(`parse as int: ${numericMatches[1]}`);
 
       return (name: string) => new ColumnMultiplied(name, value);
     }
@@ -93,7 +92,7 @@ export async function fetchDataset(
     if (dateMatches !== null) {
       const value = Number.parseInt(dateMatches[2]);
       if (Number.isNaN(value))
-        throw new Error(`unable to parse as int: ${dateMatches[2]}`);
+        throw new Error(`parse as int: ${dateMatches[2]}`);
 
       const date = new Date(value, 0);
       switch (dateMatches[1]) {
