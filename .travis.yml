@@ -3,7 +3,7 @@ node_js: node
 
 before_script:
   - npx prettier --check .
-  - npx eslint --ext ts . # TODO add -Werror
+  - npx eslint --ext ts --max-warnings 0 .
 script:
   - ( cd projects/lib && npm ci )
   - npx ng build --prod

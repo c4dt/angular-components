@@ -10,7 +10,7 @@ import { VisPoint } from './types';
 })
 export class VisGraph3dComponent implements OnChanges {
   @Input() public data: VisPoint[] | null | undefined;
-  @Input() public options: any | null | undefined;
+  @Input() public options: Record<string, unknown> | null | undefined;
 
   constructor(private readonly element: ElementRef) {}
 

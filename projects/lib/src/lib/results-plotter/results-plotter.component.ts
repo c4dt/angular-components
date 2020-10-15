@@ -15,8 +15,15 @@ export class ResultsPlotterComponent implements OnChanges {
   @Input() public factors: List<number> | null | undefined;
   @Input() public columns: List<ColumnType> | null | undefined;
 
-  public plotlyGraph: { data: any[]; layout: any } | undefined;
-  public visGraph: { data: VisPoint[]; options: any } | undefined;
+  public plotlyGraph:
+    | {
+        data: Record<string, unknown>[];
+        layout: Record<string, unknown>;
+      }
+    | undefined;
+  public visGraph:
+    | { data: VisPoint[]; options: Record<string, unknown> }
+    | undefined;
 
   private readonly range = Range(0, 10);
 
@@ -57,17 +64,15 @@ export class ResultsPlotterComponent implements OnChanges {
               List.of('x', 'y')
                 .zip(input)
                 .forEach(([key, i]) => {
-                  if (!(key in acc)) {
-                    acc[key] = [];
-                  }
-                  acc[key].push(i);
+                  if (!(key in acc)) acc[key] = [];
+                  (acc[key] as number[]).push(i);
                 });
               return acc;
             },
             {
               type: 'scatter',
               mode: 'lines',
-            } as any
+            } as Record<string, unknown | number[]>
           ),
         ],
         layout: this.gen2DOptions(this.columns, ranges),
@@ -143,7 +148,10 @@ export class ResultsPlotterComponent implements OnChanges {
     return [container.offsetWidth, container.offsetHeight];
   }
 
-  private gen2DOptions(columns: List<ColumnType>, ranges: [Point, Point]): any {
+  private gen2DOptions(
+    columns: List<ColumnType>,
+    ranges: [Point, Point]
+  ): Record<string, unknown> {
     const [width, height] = ResultsPlotterComponent.getMaximumWidth();
     const columnsName: List<string> = columns.map((col) => col.name);
 
@@ -162,11 +170,11 @@ export class ResultsPlotterComponent implements OnChanges {
           autosize: false,
           width: width,
           height: height,
-        } as any
+        } as Record<string, unknown>
       );
   }
 
-  private gen3DOptions(columns: List<ColumnType>): any {
+  private gen3DOptions(columns: List<ColumnType>): Record<string, unknown> {
     const [width, height] = ResultsPlotterComponent.getMaximumWidth();
     const columnsName: List<string> = columns.map((col) => col.name);
 
