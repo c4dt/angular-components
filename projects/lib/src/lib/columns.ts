@@ -153,6 +153,14 @@ export type ColumnType =
   | ColumnDatedYears
   | ColumnRaw;
 
+export function isColumnType(obj: unknown): obj is ColumnType {
+  return (
+    obj instanceof ColumnMultiplied ||
+    obj instanceof ColumnDated ||
+    obj instanceof ColumnRaw
+  );
+}
+
 export type OperationType =
   | 'sum'
   | 'mean'
