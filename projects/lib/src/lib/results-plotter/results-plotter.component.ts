@@ -1,15 +1,8 @@
-import { List, Range, Seq, Repeat, Collection } from 'immutable';
+import { Collection, List, Range, Repeat, Seq } from 'immutable';
 
 import { Component, Input, OnChanges } from '@angular/core';
-import {
-  Result,
-  ResultType,
-  Columns,
-  ColumnMultiplied,
-  ColumnDatedYears,
-  ColumnType,
-} from '../columns';
 
+import { ColumnType } from '../columns';
 import { VisPoint } from './types';
 
 type Point = Collection.Indexed<number>;
@@ -19,53 +12,44 @@ type Point = Collection.Indexed<number>;
   templateUrl: './results-plotter.component.html',
 })
 export class ResultsPlotterComponent implements OnChanges {
-  @Input() public label: string | null | undefined;
-  @Input() public results: List<[ResultType, Result]> | null | undefined;
-  @Input() public columns: Columns | null | undefined;
+  @Input() public factors: List<number> | null | undefined;
+  @Input() public columns: List<ColumnType> | null | undefined;
 
   public plotlyGraph: { data: any[]; layout: any } | undefined;
-
-  public visGraphData: VisPoint[] | undefined;
-  public visGraph3DOptions: any | undefined;
+  public visGraph: { data: VisPoint[]; options: any } | undefined;
 
   private readonly range = Range(0, 10);
 
   ngOnChanges(): void {
     if (
-      this.results === undefined ||
-      this.results === null ||
+      this.factors === undefined ||
+      this.factors === null ||
       this.columns === undefined ||
       this.columns === null
-    ) {
+    )
       return;
-    }
 
-    if (
-      (this.results.size < 2 || this.results.size > 3) &&
-      this.results.some(
-        (result) => result[0] !== 'number' && result[0] !== 'date/years'
-      )
-    ) {
-      return; // do not update graph
-    }
+    if (this.factors.size !== 2 && this.factors.size !== 3)
+      throw new Error('unable to plot given factors');
 
     const columns = this.columns;
-
-    const factors = this.results.map((result) => result[1] as number);
-    const points = this.interpolateFunction(factors);
+    const points = this.interpolateFunction(this.factors);
     const scalled = ResultsPlotterComponent.scalePoints(columns, points);
     const ranges: [Point, Point] = [
       scalled.reduce((acc, p) =>
         acc
           .zip(p)
           .map(([x, y]) => (x < y ? x : y))
-          .zip(columns.items)
+          .zip(columns)
           .map(([n, col]) => (col.kind === 'multiplied' ? 0 : n))
       ),
       scalled.reduce((acc, p) => acc.zip(p).map(([x, y]) => (x > y ? x : y))),
     ];
 
-    if (this.results.size === 2) {
+    this.plotlyGraph = undefined;
+    this.visGraph = undefined;
+
+    if (this.factors.size === 2) {
       this.plotlyGraph = {
         data: [
           scalled.reduce(
@@ -88,11 +72,11 @@ export class ResultsPlotterComponent implements OnChanges {
         ],
         layout: this.gen2DOptions(this.columns, ranges),
       };
-    } else if (this.results.size === 3) {
-      this.visGraphData = ResultsPlotterComponent.pointsToDataSet(
-        scalled
-      ).toJS();
-      this.visGraph3DOptions = this.gen3DOptions(this.columns);
+    } else if (this.factors.size === 3) {
+      this.visGraph = {
+        data: ResultsPlotterComponent.pointsToDataSet(scalled).toJS(),
+        options: this.gen3DOptions(this.columns),
+      };
     }
   }
 
@@ -115,23 +99,20 @@ export class ResultsPlotterComponent implements OnChanges {
   }
 
   private static scalePoints(
-    columns: Columns,
+    columns: List<ColumnType>,
     points: Seq.Indexed<Point>
   ): Seq.Indexed<Point> {
     const scaler = function (column: ColumnType, value: number): number {
-      if (column instanceof ColumnMultiplied) {
-        return value * column.factor;
-      }
+      if (column.kind === 'multiplied') return value * column.factor;
 
-      if (column instanceof ColumnDatedYears) {
+      if (column.kind === 'date/years')
         return value + column.offset.getFullYear();
-      }
 
       throw new Error('columns scaler unmatched to results');
     };
 
     return points.map((point) =>
-      columns.items.zip(point).map(([col, value]) => scaler(col, value))
+      columns.zip(point).map(([col, value]) => scaler(col, value))
     );
   }
 
@@ -156,17 +137,15 @@ export class ResultsPlotterComponent implements OnChanges {
 
   private static getMaximumWidth(): [number, number] {
     const widthContainers = document.getElementsByTagName('app-query-runner');
-    if (widthContainers === null) {
-      throw new Error('width container not found');
-    }
+    if (widthContainers === null) throw new Error('width container not found');
     const container: HTMLElement = widthContainers[0] as HTMLElement;
 
     return [container.offsetWidth, container.offsetHeight];
   }
 
-  private gen2DOptions(columns: Columns, ranges: [Point, Point]): any {
+  private gen2DOptions(columns: List<ColumnType>, ranges: [Point, Point]): any {
     const [width, height] = ResultsPlotterComponent.getMaximumWidth();
-    const columnsName: List<string> = columns.items.map((col) => col.name);
+    const columnsName: List<string> = columns.map((col) => col.name);
 
     return columnsName
       .zip(List.of('x', 'y', 'z'))
@@ -187,9 +166,9 @@ export class ResultsPlotterComponent implements OnChanges {
       );
   }
 
-  private gen3DOptions(columns: Columns): any {
+  private gen3DOptions(columns: List<ColumnType>): any {
     const [width, height] = ResultsPlotterComponent.getMaximumWidth();
-    const columnsName: List<string> = columns.items.map((col) => col.name);
+    const columnsName: List<string> = columns.map((col) => col.name);
 
     return {
       width: `${width}px`,

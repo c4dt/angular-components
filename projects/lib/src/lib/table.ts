@@ -3,11 +3,11 @@ import { List } from 'immutable';
 import * as csv from 'papaparse';
 
 import {
-  ColumnType,
-  ColumnMultiplied,
   ColumnDatedYears,
   ColumnDatedDays,
-  ColumnRaw,
+  ColumnMultiplied,
+  ColumnString,
+  ColumnType,
 } from './columns';
 
 export class Table {
@@ -77,7 +77,7 @@ export async function fetchDataset(
     throw new Error("dataset and dataset's types aren't of the same width");
 
   const types: List<(_: string) => ColumnType> = typesStr.map((t) => {
-    if (t === 'string') return (name: string) => new ColumnRaw(name);
+    if (t === 'string') return (name: string) => new ColumnString(name);
 
     const numericMatches = t.match(/^\*(\d+)$/);
     if (numericMatches !== null) {

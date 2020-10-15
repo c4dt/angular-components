@@ -2,7 +2,6 @@ import { List } from 'immutable';
 
 import { Component, Input, OnChanges } from '@angular/core';
 
-import { Result } from '../columns';
 import { Table } from '../table';
 
 @Component({
@@ -19,7 +18,7 @@ export class DataproviderViewerComponent implements OnChanges {
     this.headersName = this.table.columns.map((header) => header[0]);
   }
 
-  get(columnIndex: number, rowIndex: number): Result | undefined {
+  get(columnIndex: number, rowIndex: number): unknown | undefined {
     if (this.table === undefined || this.table === null) return undefined;
 
     const column = this.table.columns.get(columnIndex);

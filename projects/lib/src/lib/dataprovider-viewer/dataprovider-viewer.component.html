@@ -20,7 +20,7 @@
           <ng-container *ngIf="column[1].kind === 'multiplied'">
             {{ get(columnIndex, rowIndex) | number }}
           </ng-container>
-          <ng-container *ngIf="column[1].kind === 'raw'">
+          <ng-container *ngIf="column[1].kind === 'string'">
             {{ get(columnIndex, rowIndex) }}
           </ng-container>
         </mat-cell>
