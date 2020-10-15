@@ -7,6 +7,9 @@ before_script:
 script:
   - ( cd projects/lib && npm ci )
   - npx ng build --prod
+after_success:
+  - set -e
+  - out=`git status --porcelain`; [ -z "$out" ] || ( git diff; exit 1 )
 
 before_deploy:
   - echo "//registry.npmjs.org/:_authToken=${DEPLOY_NPM_TOKEN}" > "$HOME/.npmrc"
