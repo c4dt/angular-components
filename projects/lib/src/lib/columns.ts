@@ -9,48 +9,54 @@ abstract class ColumnMapper<T> {
   abstract forRow(value: string): T;
 }
 
-export abstract class ColumnDated extends ColumnMapper<Date> {
-  constructor(
-    name: string,
-    public readonly offset: Date,
-    public readonly dateSetter: (toSet: Date, value: number) => void
-  ) {
+export class ColumnDatedDays extends ColumnMapper<Date> {
+  public readonly kind = 'date/days';
+
+  constructor(name: string, public readonly offset: Date) {
     super(name);
+  }
+
+  forRow(value: string): Date {
+    const days = Number.parseInt(value, 10);
+    if (Number.isNaN(days) || days < 0 || days > 365)
+      throw new Error(`invalid days count: ${value}`);
+
+    const ret = new Date(this.offset.getTime());
+    ret.setDate(days);
+    return ret;
   }
 
   equals(other: ColumnMapper<unknown>): boolean {
     return (
-      other instanceof ColumnDated &&
+      other instanceof ColumnDatedDays &&
       other.name === this.name &&
       other.offset.getTime() === this.offset.getTime()
     );
   }
-
-  forRow(value: string): Date {
-    const date = Number.parseInt(value, 10);
-    if (Number.isNaN(date) || date < 0 || date > 365)
-      throw new Error(`invalid date: ${value}`);
-
-    const ret = new Date(this.offset.getTime());
-    this.dateSetter(ret, date);
-    return ret;
-  }
 }
 
-export class ColumnDatedDays extends ColumnDated {
-  public readonly kind = 'date/days';
-
-  constructor(name: string, offset: Date) {
-    super(name, offset, (toSet: Date, value: number) => toSet.setDate(value));
-  }
-}
-
-export class ColumnDatedYears extends ColumnDated {
+export class ColumnDatedYears extends ColumnMapper<Date> {
   public readonly kind = 'date/years';
 
-  constructor(name: string, offset: Date) {
-    super(name, offset, (toSet: Date, value: number) =>
-      toSet.setFullYear(offset.getFullYear() + value)
+  constructor(name: string, public readonly offset: Date) {
+    super(name);
+  }
+
+  forRow(value: string): Date {
+    const years = Number.parseInt(value, 10);
+    if (Number.isNaN(years) || years < 0)
+      throw new Error(`invalid years count: ${value}`);
+
+    const ret = new Date(this.offset.getTime());
+    ret.setFullYear(this.offset.getFullYear() + years);
+    return ret;
+  }
+
+  equals(other: ColumnMapper<unknown>): boolean {
+    return (
+      other instanceof ColumnDatedYears &&
+      other.name === this.name &&
+      other.offset.getTime() === this.offset.getTime()
     );
   }
 }

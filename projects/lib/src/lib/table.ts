@@ -88,7 +88,7 @@ export async function fetchDataset(
       return (name: string) => new ColumnMultiplied(name, value);
     }
 
-    const dateMatches = t.match(/^date\/(years|days)\+(\d+)$/);
+    const dateMatches = t.match(/^date\/(years|days)\+(\d+)years$/);
     if (dateMatches !== null) {
       const value = Number.parseInt(dateMatches[2]);
       if (Number.isNaN(value))
