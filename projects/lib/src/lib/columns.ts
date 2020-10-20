@@ -1,116 +1,80 @@
-abstract class ColumnMapper<T> {
-  public abstract readonly kind:
-    | 'date/days'
-    | 'date/years'
-    | 'multiplied'
-    | 'string';
-  constructor(public readonly name: string) {}
-  abstract equals(other: ColumnMapper<unknown>): boolean;
-  abstract forRow(value: string): T;
+import { List } from 'immutable';
+
+abstract class Column<T> {
+  constructor(public readonly name: string, public readonly rows: List<T>) {}
 }
 
-export class ColumnDatedDays extends ColumnMapper<Date> {
-  public readonly kind = 'date/days';
-
-  constructor(name: string, public readonly offset: Date) {
-    super(name);
-  }
-
-  forRow(value: string): Date {
-    const days = Number.parseInt(value, 10);
-    if (Number.isNaN(days) || days < 0 || days > 365)
-      throw new Error(`invalid days count: ${value}`);
-
-    const ret = new Date(this.offset.getTime());
-    ret.setDate(days);
-    return ret;
-  }
-
-  equals(other: ColumnMapper<unknown>): boolean {
-    return (
-      other instanceof ColumnDatedDays &&
-      other.name === this.name &&
-      other.offset.getTime() === this.offset.getTime()
-    );
+export class StringColumn extends Column<string> {}
+abstract class DatedColumn extends Column<Date> {
+  constructor(
+    name: string,
+    values: List<number>,
+    public readonly offset: (value: number) => Date
+  ) {
+    super(name, values.map(offset));
   }
 }
-
-export class ColumnDatedYears extends ColumnMapper<Date> {
-  public readonly kind = 'date/years';
-
-  constructor(name: string, public readonly offset: Date) {
-    super(name);
-  }
-
-  forRow(value: string): Date {
-    const years = Number.parseInt(value, 10);
-    if (Number.isNaN(years) || years < 0)
-      throw new Error(`invalid years count: ${value}`);
-
-    const ret = new Date(this.offset.getTime());
-    ret.setFullYear(this.offset.getFullYear() + years);
-    return ret;
-  }
-
-  equals(other: ColumnMapper<unknown>): boolean {
-    return (
-      other instanceof ColumnDatedYears &&
-      other.name === this.name &&
-      other.offset.getTime() === this.offset.getTime()
-    );
+export class DatedDaysColumn extends DatedColumn {
+  constructor(name: string, values: List<number>, offset: Date) {
+    super(name, values, (value: number) => {
+      const ret = new Date(offset);
+      ret.setDate(ret.getDate() + value);
+      return ret;
+    });
   }
 }
-
-export class ColumnMultiplied extends ColumnMapper<number> {
-  public readonly kind = 'multiplied';
-
-  constructor(name: string, public readonly factor: number) {
-    super(name);
+export class DatedYearsColumn extends DatedColumn {
+  constructor(name: string, values: List<number>, offset: Date) {
+    super(name, values, (value: number) => {
+      const ret = new Date(offset);
+      ret.setFullYear(offset.getFullYear() + value);
+      return ret;
+    });
   }
-
-  equals(other: ColumnMapper<unknown>): boolean {
-    return (
-      other instanceof ColumnMultiplied &&
-      other.name === this.name &&
-      other.factor === this.factor
+}
+export class MultipliedColumn extends Column<number> {
+  constructor(
+    name: string,
+    values: List<number>,
+    private readonly factor: number
+  ) {
+    super(
+      name,
+      values.map((value) => MultipliedColumn.multiplyWithFactor(factor, value))
     );
   }
 
-  forRow(value: string): number {
-    const num = Number.parseInt(value, 10);
-    if (Number.isNaN(num)) throw new Error(`invalid number: ${value}`);
-
-    return this.factor * num;
+  private static multiplyWithFactor(factor: number, value: number): number {
+    return factor * value;
+  }
+  public multiply(value: number): number {
+    return MultipliedColumn.multiplyWithFactor(this.factor, value);
   }
 }
 
-export class ColumnString extends ColumnMapper<string> {
-  public readonly kind = 'string';
-
-  constructor(name: string) {
-    super(name);
-  }
-
-  equals(other: ColumnMapper<unknown>): boolean {
-    return other instanceof ColumnString && other.name === this.name;
-  }
-
-  forRow(value: string): string {
-    return value;
-  }
-}
-
-export type ColumnType =
-  | ColumnDatedDays
-  | ColumnDatedYears
-  | ColumnMultiplied
-  | ColumnString;
-
-export function isColumnType(obj: unknown): obj is ColumnType {
+export type ColumnTypes =
+  | StringColumn
+  | DatedDaysColumn
+  | DatedYearsColumn
+  | MultipliedColumn;
+export function isColumnType(obj: unknown): obj is ColumnTypes {
   return (
-    obj instanceof ColumnDatedDays ||
-    obj instanceof ColumnDatedYears ||
-    obj instanceof ColumnMultiplied ||
-    obj instanceof ColumnString
+    obj instanceof StringColumn ||
+    obj instanceof DatedDaysColumn ||
+    obj instanceof DatedYearsColumn ||
+    obj instanceof MultipliedColumn
   );
+}
+
+export type AngularColumnTypes =
+  | 'date/days'
+  | 'date/years'
+  | 'number'
+  | 'string';
+export function toAngularColumnTypes(column: ColumnTypes): AngularColumnTypes {
+  if (column instanceof DatedDaysColumn) return 'date/days';
+  else if (column instanceof DatedYearsColumn) return 'date/years';
+  else if (column instanceof MultipliedColumn) return 'number';
+  else if (column instanceof StringColumn) return 'string';
+  throw new Error('unknown column type');
 }

@@ -1,26 +1,26 @@
 <ng-container *ngIf="table === null || table === undefined"
-  >loading dataset...</ng-container
+  >Loading dataset...</ng-container
 >
 <ng-container *ngIf="table !== null && table !== undefined">
   <cdk-virtual-scroll-viewport style="height: 100%" itemSize="1">
-    <mat-table [dataSource]="table.columns.toJS()">
+    <mat-table [dataSource]="table.columns.get(0).rows.toJS()">
       <ng-container
-        *ngFor="let column of table.columns.toJS(); index as columnIndex"
-        matColumnDef="{{ column[0] }}"
+        *ngFor="let column of table.columns; index as columnIndex"
+        matColumnDef="{{ column.name }}"
       >
-        <mat-header-cell *matHeaderCellDef> {{ column[0] }} </mat-header-cell>
+        <mat-header-cell *matHeaderCellDef> {{ column.name }} </mat-header-cell>
 
         <mat-cell *matCellDef="let _; index as rowIndex">
-          <ng-container *ngIf="column[1].kind === 'date/years'">
+          <ng-container *ngIf="columnTypes[columnIndex] === 'date/years'">
             {{ get(columnIndex, rowIndex) | date: "yyyy" }}
           </ng-container>
-          <ng-container *ngIf="column[1].kind === 'date/days'">
+          <ng-container *ngIf="columnTypes[columnIndex] === 'date/days'">
             {{ get(columnIndex, rowIndex) | date }}
           </ng-container>
-          <ng-container *ngIf="column[1].kind === 'multiplied'">
+          <ng-container *ngIf="columnTypes[columnIndex] === 'number'">
             {{ get(columnIndex, rowIndex) | number }}
           </ng-container>
-          <ng-container *ngIf="column[1].kind === 'string'">
+          <ng-container *ngIf="columnTypes[columnIndex] === 'string'">
             {{ get(columnIndex, rowIndex) }}
           </ng-container>
         </mat-cell>
@@ -30,7 +30,7 @@
         *matHeaderRowDef="headersName.toJS(); sticky: true"
       ></mat-header-row>
 
-      <mat-row *matRowDef="let _; columns: headersName.toJS()"></mat-row>
+      <mat-row *matRowDef="let row; columns: headersName.toJS()"></mat-row>
     </mat-table>
   </cdk-virtual-scroll-viewport>
 </ng-container>

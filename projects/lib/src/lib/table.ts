@@ -3,36 +3,21 @@ import { List } from 'immutable';
 import * as csv from 'papaparse';
 
 import {
-  ColumnDatedYears,
-  ColumnDatedDays,
-  ColumnMultiplied,
-  ColumnString,
-  ColumnType,
+  DatedYearsColumn,
+  DatedDaysColumn,
+  MultipliedColumn,
+  StringColumn,
+  ColumnTypes,
 } from './columns';
 
 export class Table {
-  public constructor(
-    public readonly columns: List<
-      [header: string, type: ColumnType, rows: List<string>]
-    >
-  ) {
-    const firstColumn = columns.first(undefined);
+  constructor(public readonly columns: List<ColumnTypes>) {
+    const firstColumn = columns.get(0);
     if (firstColumn === undefined) throw new Error('no columns');
-    const rowCount = firstColumn[2].size;
+    const rowCount = firstColumn.rows.size;
 
-    if (columns.shift().some((column) => column[2].size !== rowCount))
+    if (columns.shift().some((column) => column.rows.size !== rowCount))
       throw new Error('unconsistent width');
-  }
-
-  public toObject(): Array<{
-    [_: string]: [ColumnType, number | Date | string];
-  }> {
-    const ret = this.columns
-      .map(([name, type, rows]) =>
-        rows.map((value) => [name, [type, type.forRow(value)]])
-      )
-      .toJS();
-    return ret;
   }
 }
 
@@ -76,52 +61,60 @@ export async function fetchDataset(
   if (header.size !== typesStr.size)
     throw new Error("dataset and dataset's types aren't of the same width");
 
-  const types: List<(_: string) => ColumnType> = typesStr.map((t) => {
-    if (t === 'string') return (name: string) => new ColumnString(name);
+  const dataset = (await datasetCSV).shift();
+  return new Table(
+    header.zip(typesStr).map(([name, t], columnIndex) => {
+      if (t === 'string')
+        return new StringColumn(
+          name,
+          dataset.map((row) => row.get(columnIndex) as string)
+        );
 
-    const numericMatches = t.match(/^\*(\d+)$/);
-    if (numericMatches !== null) {
-      const value = Number.parseInt(numericMatches[1]);
-      if (Number.isNaN(value))
-        throw new Error(`parse as int: ${numericMatches[1]}`);
+      const numericMatches = t.match(/^\*(\d+)$/);
+      if (numericMatches !== null) {
+        const factor = Number.parseInt(numericMatches[1]);
+        if (Number.isNaN(factor))
+          throw new Error(`parse as int: ${numericMatches[1]}`);
 
-      return (name: string) => new ColumnMultiplied(name, value);
-    }
-
-    const dateMatches = t.match(/^date\/(years|days)\+(\d+)years$/);
-    if (dateMatches !== null) {
-      const value = Number.parseInt(dateMatches[2]);
-      if (Number.isNaN(value))
-        throw new Error(`parse as int: ${dateMatches[2]}`);
-
-      const date = new Date(value, 0);
-      switch (dateMatches[1]) {
-        case 'years':
-          return (name: string) => new ColumnDatedYears(name, date);
-        case 'days':
-          return (name: string) => new ColumnDatedDays(name, date);
+        return new MultipliedColumn(
+          name,
+          dataset.map((row) => {
+            const value = Number.parseFloat(row.get(columnIndex) as string);
+            if (Number.isNaN(value))
+              throw new Error(`parse as float: ${value}`);
+            return value;
+          }),
+          factor
+        );
       }
-    }
 
-    throw new Error(`unknown dataset's type: ${t}`);
-  });
+      const dateMatches = t.match(/^date\/(years|days)\+(\d+)years$/);
+      if (dateMatches !== null) {
+        const offset = Number.parseInt(dateMatches[2]);
+        if (Number.isNaN(offset))
+          throw new Error(`parse as int: ${dateMatches[2]}`);
+        const date = new Date(0);
+        date.setFullYear(offset);
 
-  const content = (await datasetCSV).shift();
-  const columns = header
-    .zip(types)
-    .map(([name, typeConstructor], columnIndex) => {
-      const ret: [string, ColumnType, List<string>] = [
-        name,
-        typeConstructor(name),
-        content.map((line) => {
-          const element = line.get(columnIndex);
-          if (element === undefined)
-            throw new Error('missing element in dataset');
-          return element;
-        }),
-      ];
-      return ret;
-    });
+        if (dateMatches[1] !== 'years' && dateMatches[1] !== 'days')
+          throw new Error(`unknown dataset's date type: ${dateMatches[1]}`);
+        const dateType = dateMatches[1];
 
-  return new Table(columns);
+        const rows = dataset.map((row) => {
+          const value = Number.parseInt(row.get(columnIndex) as string);
+          if (Number.isNaN(value)) throw new Error(`parse as int: ${value}`);
+          return value;
+        });
+
+        switch (dateType) {
+          case 'years':
+            return new DatedYearsColumn(name, rows, date);
+          case 'days':
+            return new DatedDaysColumn(name, rows, date);
+        }
+      }
+
+      throw new Error(`unknown dataset's type: ${t}`);
+    })
+  );
 }

@@ -3,6 +3,7 @@ import { List } from 'immutable';
 import { Component, Input, OnChanges } from '@angular/core';
 
 import { Table } from '../table';
+import { AngularColumnTypes, toAngularColumnTypes } from '../columns';
 
 @Component({
   selector: 'lib-dataprovider-viewer',
@@ -11,11 +12,13 @@ import { Table } from '../table';
 export class DataproviderViewerComponent implements OnChanges {
   @Input() public table: Table | null | undefined;
 
+  public columnTypes: AngularColumnTypes[] | undefined;
   public headersName: List<string> | undefined;
 
   async ngOnChanges(): Promise<void> {
     if (this.table === undefined || this.table === null) return;
-    this.headersName = this.table.columns.map((header) => header[0]);
+    this.columnTypes = this.table.columns.map(toAngularColumnTypes).toArray();
+    this.headersName = this.table.columns.map((column) => column.name);
   }
 
   get(columnIndex: number, rowIndex: number): unknown | undefined {
@@ -24,9 +27,6 @@ export class DataproviderViewerComponent implements OnChanges {
     const column = this.table.columns.get(columnIndex);
     if (column === undefined) return undefined;
 
-    const value = column[2].get(rowIndex);
-    if (value === undefined) return undefined;
-
-    return column[1].forRow(value);
+    return column.rows.get(rowIndex);
   }
 }
