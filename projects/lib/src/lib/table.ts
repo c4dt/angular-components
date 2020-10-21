@@ -70,7 +70,7 @@ export async function fetchDataset(
           dataset.map((row) => row.get(columnIndex) as string)
         );
 
-      const numericMatches = t.match(/^\*(\d+)$/);
+      const numericMatches = t.match(/^number(\*(\d+))$/);
       if (numericMatches !== null) {
         const factor = Number.parseInt(numericMatches[1]);
         if (Number.isNaN(factor))
