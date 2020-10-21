@@ -5,7 +5,7 @@ import * as csv from 'papaparse';
 import {
   DatedYearsColumn,
   DatedDaysColumn,
-  MultipliedColumn,
+  NumberColumn,
   StringColumn,
   ColumnTypes,
 } from './columns';
@@ -76,7 +76,7 @@ export async function fetchDataset(
         if (Number.isNaN(factor))
           throw new Error(`parse as int: ${numericMatches[1]}`);
 
-        return new MultipliedColumn(
+        return new NumberColumn(
           name,
           dataset.map((row) => {
             const value = Number.parseFloat(row.get(columnIndex) as string);

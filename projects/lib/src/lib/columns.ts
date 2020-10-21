@@ -32,7 +32,7 @@ export class DatedYearsColumn extends DatedColumn {
     });
   }
 }
-export class MultipliedColumn extends Column<number> {
+export class NumberColumn extends Column<number> {
   constructor(
     name: string,
     values: List<number>,
@@ -40,7 +40,7 @@ export class MultipliedColumn extends Column<number> {
   ) {
     super(
       name,
-      values.map((value) => MultipliedColumn.multiplyWithFactor(factor, value))
+      values.map((value) => NumberColumn.multiplyWithFactor(factor, value))
     );
   }
 
@@ -48,7 +48,7 @@ export class MultipliedColumn extends Column<number> {
     return factor * value;
   }
   public multiply(value: number): number {
-    return MultipliedColumn.multiplyWithFactor(this.factor, value);
+    return NumberColumn.multiplyWithFactor(this.factor, value);
   }
 }
 
@@ -56,13 +56,13 @@ export type ColumnTypes =
   | StringColumn
   | DatedDaysColumn
   | DatedYearsColumn
-  | MultipliedColumn;
+  | NumberColumn;
 export function isColumnType(obj: unknown): obj is ColumnTypes {
   return (
     obj instanceof StringColumn ||
     obj instanceof DatedDaysColumn ||
     obj instanceof DatedYearsColumn ||
-    obj instanceof MultipliedColumn
+    obj instanceof NumberColumn
   );
 }
 
@@ -74,7 +74,7 @@ export type AngularColumnTypes =
 export function toAngularColumnTypes(column: ColumnTypes): AngularColumnTypes {
   if (column instanceof DatedDaysColumn) return 'date/days';
   else if (column instanceof DatedYearsColumn) return 'date/years';
-  else if (column instanceof MultipliedColumn) return 'number';
+  else if (column instanceof NumberColumn) return 'number';
   else if (column instanceof StringColumn) return 'string';
   throw new Error('unknown column type');
 }
