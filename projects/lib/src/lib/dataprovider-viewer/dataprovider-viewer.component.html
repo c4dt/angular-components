@@ -18,7 +18,10 @@
             {{ get(columnIndex, rowIndex) | date }}
           </ng-container>
           <ng-container *ngIf="columnTypes[columnIndex] === 'number'">
-            {{ get(columnIndex, rowIndex) | number }}
+            {{
+              get(columnIndex, rowIndex)
+                | number: "1." + column.decimalCount + "-" + column.decimalCount
+            }}
           </ng-container>
           <ng-container *ngIf="columnTypes[columnIndex] === 'string'">
             {{ get(columnIndex, rowIndex) }}

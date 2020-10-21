@@ -70,9 +70,17 @@ export async function fetchDataset(
           dataset.map((row) => row.get(columnIndex) as string)
         );
 
-      const numericMatches = t.match(/^number(\*(\d+))?$/);
+      const numericMatches = t.match(/^number(\.(\d))?(\*(\d+))?$/);
       if (numericMatches !== null) {
-        const factorStr = numericMatches[2];
+        const decimalCountStr = numericMatches[2];
+        const factorStr = numericMatches[4];
+
+        let decimalCount;
+        if (decimalCountStr !== undefined) {
+          decimalCount = Number.parseInt(decimalCountStr);
+          if (Number.isNaN(decimalCount))
+            throw new Error(`parse decimal count as int: ${decimalCountStr}`);
+        }
 
         let factor;
         if (factorStr !== undefined) {
@@ -89,6 +97,7 @@ export async function fetchDataset(
               throw new Error(`parse as float: ${value}`);
             return value;
           }),
+          decimalCount,
           factor
         );
       }
