@@ -36,7 +36,7 @@ export class NumberColumn extends Column<number> {
   constructor(
     name: string,
     values: List<number>,
-    private readonly factor: number
+    private readonly factor: number = 1
   ) {
     super(
       name,

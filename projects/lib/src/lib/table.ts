@@ -70,11 +70,16 @@ export async function fetchDataset(
           dataset.map((row) => row.get(columnIndex) as string)
         );
 
-      const numericMatches = t.match(/^number(\*(\d+))$/);
+      const numericMatches = t.match(/^number(\*(\d+))?$/);
       if (numericMatches !== null) {
-        const factor = Number.parseInt(numericMatches[1]);
-        if (Number.isNaN(factor))
-          throw new Error(`parse as int: ${numericMatches[1]}`);
+        const factorStr = numericMatches[2];
+
+        let factor;
+        if (factorStr !== undefined) {
+          factor = Number.parseInt(factorStr);
+          if (Number.isNaN(factor))
+            throw new Error(`parse factor as int: ${factorStr}`);
+        }
 
         return new NumberColumn(
           name,
