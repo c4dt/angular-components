@@ -8,6 +8,7 @@ import {
   NumberColumn,
   StringColumn,
   ColumnTypes,
+  BooleanColumn,
 } from './columns';
 
 export class Table {
@@ -64,11 +65,28 @@ export async function fetchDataset(
   const dataset = (await datasetCSV).shift();
   return new Table(
     header.zip(typesStr).map(([name, t], columnIndex) => {
-      if (t === 'string')
-        return new StringColumn(
-          name,
-          dataset.map((row) => row.get(columnIndex) as string)
-        );
+      switch (t) {
+        case 'string':
+          return new StringColumn(
+            name,
+            dataset.map((row) => row.get(columnIndex) as string)
+          );
+        case 'boolean':
+          return new BooleanColumn(
+            name,
+            dataset.map((row) => {
+              const value = row.get(columnIndex) as string;
+              switch (value) {
+                case '0':
+                  return false;
+                case '1':
+                  return true;
+                default:
+                  throw new Error(`parse as boolean: ${value}`);
+              }
+            })
+          );
+      }
 
       const numericMatches = t.match(/^number(\.(\d))?(\*(\d+))?$/);
       if (numericMatches !== null) {

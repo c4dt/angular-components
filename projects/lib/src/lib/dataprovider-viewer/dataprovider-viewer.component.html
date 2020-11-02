@@ -23,7 +23,12 @@
                 | number: "1." + column.decimalCount + "-" + column.decimalCount
             }}
           </ng-container>
-          <ng-container *ngIf="columnTypes[columnIndex] === 'string'">
+          <ng-container
+            *ngIf="
+              columnTypes[columnIndex] === 'string' ||
+              columnTypes[columnIndex] === 'boolean'
+            "
+          >
             {{ get(columnIndex, rowIndex) }}
           </ng-container>
         </mat-cell>

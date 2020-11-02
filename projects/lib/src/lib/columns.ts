@@ -52,18 +52,21 @@ export class NumberColumn extends Column<number> {
     return NumberColumn.multiplyWithFactor(this.factor, value);
   }
 }
+export class BooleanColumn extends Column<boolean> {}
 
 export type ColumnTypes =
   | StringColumn
   | DatedDaysColumn
   | DatedYearsColumn
-  | NumberColumn;
+  | NumberColumn
+  | BooleanColumn;
 export function isColumnType(obj: unknown): obj is ColumnTypes {
   return (
     obj instanceof StringColumn ||
     obj instanceof DatedDaysColumn ||
     obj instanceof DatedYearsColumn ||
-    obj instanceof NumberColumn
+    obj instanceof NumberColumn ||
+    obj instanceof BooleanColumn
   );
 }
 
@@ -71,11 +74,13 @@ export type AngularColumnTypes =
   | 'date/days'
   | 'date/years'
   | 'number'
-  | 'string';
+  | 'string'
+  | 'boolean';
 export function toAngularColumnTypes(column: ColumnTypes): AngularColumnTypes {
   if (column instanceof DatedDaysColumn) return 'date/days';
   else if (column instanceof DatedYearsColumn) return 'date/years';
   else if (column instanceof NumberColumn) return 'number';
   else if (column instanceof StringColumn) return 'string';
+  else if (column instanceof BooleanColumn) return 'boolean';
   throw new Error('unknown column type');
 }
