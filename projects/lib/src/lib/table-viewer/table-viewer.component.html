@@ -1,6 +1,6 @@
-<ng-container *ngIf="table === null || table === undefined"
-  >Loading dataset...</ng-container
->
+<ng-container *ngIf="table === null || table === undefined">
+  Loading dataset...
+</ng-container>
 <ng-container *ngIf="table !== null && table !== undefined">
   <cdk-virtual-scroll-viewport style="height: 100%" itemSize="1">
     <mat-table [dataSource]="table.columns.get(0).rows.toJS()">

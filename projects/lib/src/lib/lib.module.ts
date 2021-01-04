@@ -4,11 +4,11 @@ import { CommonModule } from '@angular/common';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { MatTableModule } from '@angular/material/table';
 
-import { DataproviderViewerComponent } from './dataprovider-viewer/dataprovider-viewer.component';
+import { TableViewerComponent } from './table-viewer/table-viewer.component';
 
 @NgModule({
-  declarations: [DataproviderViewerComponent],
+  declarations: [TableViewerComponent],
   imports: [CommonModule, MatTableModule, ScrollingModule],
-  exports: [DataproviderViewerComponent],
+  exports: [TableViewerComponent],
 })
 export class LibModule {}

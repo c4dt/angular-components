@@ -6,10 +6,10 @@ import { Table } from '../table';
 import { AngularColumnTypes, toAngularColumnTypes } from '../columns';
 
 @Component({
-  selector: 'lib-dataprovider-viewer',
-  templateUrl: './dataprovider-viewer.component.html',
+  selector: 'lib-table-viewer',
+  templateUrl: './table-viewer.component.html',
 })
-export class DataproviderViewerComponent implements OnChanges {
+export class TableViewerComponent implements OnChanges {
   @Input() public table: Table | null | undefined;
 
   public columnTypes: AngularColumnTypes[] | undefined;
