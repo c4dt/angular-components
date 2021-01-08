@@ -1,0 +1,7 @@
+<div (click)="reveal()" *ngIf="!revealed">
+  <ng-content select="lib-revealer-label"></ng-content>
+</div>
+
+<div [ngClass]="revealed || 'to-reveal'" style="height: 100%">
+  <ng-content></ng-content>
+</div>
