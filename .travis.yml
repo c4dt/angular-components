@@ -6,6 +6,7 @@ before_script:
   - npx eslint --ext ts --max-warnings 0 .
 script:
   - ( cd projects/lib && npm ci )
+  - npx ng build
   - npx ng build --prod
 after_success:
   - set -e
