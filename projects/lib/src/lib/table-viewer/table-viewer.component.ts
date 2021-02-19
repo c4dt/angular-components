@@ -14,19 +14,23 @@ import {
 @Component({
   selector: 'lib-table-viewer',
   templateUrl: './table-viewer.component.html',
+  styleUrls: ['./table-viewer.component.css'],
 })
 export class TableViewerComponent implements OnChanges {
   @Input() public table: Table | null | undefined;
 
+  public readonly lineNumberHeaderName = 'Line number';
+
   public dataSource: string[][] = [];
   public headersName: string[] = [];
+  public columnsName: string[] = [];
 
   async ngOnChanges(): Promise<void> {
     if (this.table === undefined || this.table === null) return;
 
-    this.headersName = this.table.columns
-      .map((column) => column.name)
-      .toArray();
+    const columnsName = this.table.columns.map((column) => column.name);
+    this.columnsName = columnsName.toArray();
+    this.headersName = columnsName.unshift(this.lineNumberHeaderName).toArray();
 
     const columns = this.table.columns.map((column) => {
       let rows: List<string>;

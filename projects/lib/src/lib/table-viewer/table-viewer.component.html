@@ -2,10 +2,19 @@
   Loading dataset...
 </ng-container>
 <ng-container *ngIf="table !== null && table !== undefined">
-  <cdk-virtual-scroll-viewport style="height: 100%" itemSize="1">
+  <cdk-virtual-scroll-viewport itemSize="1">
     <mat-table [dataSource]="dataSource">
+      <ng-container matColumnDef="{{ lineNumberHeaderName }}">
+        <mat-header-cell *matHeaderCellDef>
+          {{ lineNumberHeaderName }}
+        </mat-header-cell>
+        <mat-cell *matCellDef="let elem; index as rowIndex" class="line-number">
+          {{ rowIndex }}
+        </mat-cell>
+      </ng-container>
+
       <ng-container
-        *ngFor="let header of headersName; index as columnIndex"
+        *ngFor="let header of columnsName; index as columnIndex"
         matColumnDef="{{ header }}"
       >
         <mat-header-cell *matHeaderCellDef> {{ header }} </mat-header-cell>
