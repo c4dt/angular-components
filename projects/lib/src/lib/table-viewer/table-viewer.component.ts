@@ -56,9 +56,12 @@ export class TableViewerComponent implements OnChanges {
       return rows;
     });
 
-    this.dataSource = columns
-      .map((_, columnIndex) =>
-        columns.map((column) => column.get(columnIndex) as string).toArray()
+    const firstColumn = columns.first(undefined);
+    if (firstColumn === undefined) throw new Error('no column');
+
+    this.dataSource = firstColumn
+      .map((_, rowIndex) =>
+        columns.map((column) => column.get(rowIndex) as string).toArray()
       )
       .toArray();
   }
