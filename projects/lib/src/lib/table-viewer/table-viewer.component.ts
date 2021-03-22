@@ -65,13 +65,4 @@ export class TableViewerComponent implements OnChanges {
       )
       .toArray();
   }
-
-  get(columnIndex: number, rowIndex: number): unknown | undefined {
-    if (this.table === undefined || this.table === null) return undefined;
-
-    const column = this.table.columns.get(columnIndex);
-    if (column === undefined) return undefined;
-
-    return column.rows.get(rowIndex);
-  }
 }
