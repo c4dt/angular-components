@@ -18,14 +18,19 @@
         matColumnDef="{{ header }}"
       >
         <mat-header-cell *matHeaderCellDef> {{ header }} </mat-header-cell>
-        <mat-cell *matCellDef="let elem"> {{ elem[columnIndex] }} </mat-cell>
+        <mat-cell *matCellDef="let elem">
+          {{ elem.get(columnIndex).rows.first() }}
+        </mat-cell>
       </ng-container>
 
       <mat-header-row
         *matHeaderRowDef="headersName; sticky: true"
       ></mat-header-row>
 
-      <mat-row *matRowDef="let row; columns: headersName"></mat-row>
+      <mat-row
+        (click)="this.selectedRow.emit(row)"
+        *matRowDef="let row; columns: headersName"
+      ></mat-row>
     </mat-table>
   </cdk-virtual-scroll-viewport>
 </ng-container>

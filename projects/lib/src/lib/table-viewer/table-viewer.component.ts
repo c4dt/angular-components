@@ -1,10 +1,17 @@
 import { List } from 'immutable';
 
-import { Component, Input, OnChanges } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+} from '@angular/core';
 
 import { Table } from '../table';
 import {
   BooleanColumn,
+  ColumnTypes,
   DatedDaysColumn,
   DatedYearsColumn,
   NumberColumn,
@@ -18,10 +25,11 @@ import {
 })
 export class TableViewerComponent implements OnChanges {
   @Input() public table: Table | null | undefined;
+  @Output() selectedRow = new EventEmitter<List<ColumnTypes>>();
 
   public readonly lineNumberHeaderName = 'Line number';
 
-  public dataSource: string[][] = [];
+  public dataSource: List<StringColumn>[] = [];
   public headersName: string[] = [];
   public columnsName: string[] = [];
 
@@ -53,15 +61,21 @@ export class TableViewerComponent implements OnChanges {
         rows = column.rows.map((b) => b.toString());
       else throw new Error("unknown column's type");
 
-      return rows;
+      return new StringColumn(column.name, rows);
     });
 
     const firstColumn = columns.first(undefined);
     if (firstColumn === undefined) throw new Error('no column');
 
-    this.dataSource = firstColumn
+    this.dataSource = firstColumn.rows
       .map((_, rowIndex) =>
-        columns.map((column) => column.get(rowIndex) as string).toArray()
+        columns.map(
+          (column) =>
+            new StringColumn(
+              column.name,
+              List.of(column.rows.get(rowIndex) as string)
+            )
+        )
       )
       .toArray();
   }
