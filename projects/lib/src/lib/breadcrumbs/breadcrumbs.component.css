@@ -1,0 +1,17 @@
+div {
+  background-color: #eeeeee;
+  padding-left: 1rem;
+  padding-top: 0.5rem;
+  font-size: large;
+  height: 2rem;
+  border: 1px solid #060606;
+}
+
+a:link,
+a:visited {
+  color: #289cae;
+}
+
+a:hover {
+  color: #007080;
+}

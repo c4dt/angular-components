@@ -1,0 +1,9 @@
+<div *ngIf="showcaseBreadCrumb !== undefined && showcaseBreadCrumb !== null">
+  <ng-container
+    *ngFor="let breadcrumb of baseBreadCrumbs.push(showcaseBreadCrumb)"
+  >
+    <a href="{{ breadcrumb.link }}">{{ breadcrumb.label }}</a>
+    &gt;
+  </ng-container>
+  <b>Demonstrator</b>
+</div>
