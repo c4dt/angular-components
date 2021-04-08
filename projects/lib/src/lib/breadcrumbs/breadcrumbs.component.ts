@@ -13,7 +13,7 @@ export class BreadcrumbsComponent {
   @Input() showcaseBreadCrumb: BreadCrumb | null | undefined;
 
   public readonly baseBreadCrumbs: List<BreadCrumb> = List.of(
-    { label: 'Factory', link: new URL('https://www.c4dt.org/factory') },
-    { label: 'Incubator', link: new URL('https://incubator.c4dt.org') }
+    { label: 'Factory', link: new URL('https://factory.c4dt.org/') },
+    { label: 'Incubator', link: new URL('https://factory.c4dt.org/incubator') }
   );
 }
