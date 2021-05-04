@@ -1,3 +1,17 @@
-. {
-  background-color: green;
+:root {
+  --dark-grey: #232323;
+  --light-grey: #bfbfbe;
+  --orange: #ffa870;
+  --light-orange: #f5cda4;
+  --blue: #0091aa;
+  --light-blue: #a4bfcf;
+}
+.body {
+  font-family: Verdana, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: var(--dark-grey);
+    color: var(--light-grey);
+  }
 }
