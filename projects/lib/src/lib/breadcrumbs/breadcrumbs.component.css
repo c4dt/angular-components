@@ -9,9 +9,24 @@ div {
 
 a:link,
 a:visited {
-  color: #289cae;
+  color: var(--light-blue);
 }
 
 a:hover {
-  color: #007080;
+  color: var(--blue);
+}
+@media (prefers-color-scheme: dark) {
+  div {
+    background-color: var(--dark-grey);
+    border: 1px solid var(--light-grey);
+    font-family: Verdana, sans-serif;
+  }
+  a:link,
+  a:visited {
+    color: var(--orange);
+  }
+  input {
+    background-color: var(--dark-grey);
+    color: var(--light-grey);
+  }
 }
