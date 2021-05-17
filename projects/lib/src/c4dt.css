@@ -1,0 +1,26 @@
+:root {
+  --dark-grey: #232323;
+  --light-grey: #bfbfbe;
+  --orange: #ffa870;
+  --light-orange: #f5cda4;
+  --blue: #0091aa;
+  --light-blue: #a4bfcf;
+}
+.body {
+  font-family: Verdana, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  body {
+    font-family: Verdana, sans-serif;
+    background-color: var(--dark-grey);
+    color: var(--light-grey);
+  }
+  a:link,
+  a:visited {
+    color: var(--orange);
+  }
+  input {
+    background-color: #080808;
+    color: var(--light-grey);
+  }
+}

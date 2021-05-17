@@ -1,5 +1,6 @@
 {
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
+  "assets": ["src/c4dt.css"],
   "dest": "../../dist/lib",
   "lib": {
     "entryFile": "src/public-api.ts"
