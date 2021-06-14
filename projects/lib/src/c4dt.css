@@ -6,21 +6,29 @@
   --blue: #0091aa;
   --light-blue: #a4bfcf;
 }
-.body {
+* {
   font-family: Verdana, sans-serif;
 }
+
 @media (prefers-color-scheme: dark) {
   body {
-    font-family: Verdana, sans-serif;
     background-color: var(--dark-grey);
     color: var(--light-grey);
   }
   a:link,
   a:visited {
-    color: var(--orange);
+    color: var(--orange) !important;
+  }
+  a:hover {
+    color: var(--blue) !important;
   }
   input {
     background-color: #080808;
     color: var(--light-grey);
+  }
+  lib-breadcrumbs > div {
+    background-color: var(--dark-grey) !important;
+    color: var(--light-grey) !important;
+    border: 1px solid var(--light-grey) !important;
   }
 }
