@@ -2,10 +2,10 @@
   "name": "@c4dt/angular-components",
   "version": "3.0.0",
   "peerDependencies": {
-    "@angular/common": "10",
-    "@angular/cdk": "10",
-    "@angular/core": "10",
-    "@angular/material": "10",
+    "@angular/common": "11",
+    "@angular/cdk": "11",
+    "@angular/core": "11",
+    "@angular/material": "11",
     "immutable": "4",
     "papaparse": "5"
   },
@@ -13,8 +13,8 @@
     "tslib": "2"
   },
   "devDependencies": {
-    "@angular/cdk": "10",
-    "@angular/material": "10",
+    "@angular/cdk": "11",
+    "@angular/material": "11",
     "@types/papaparse": "5",
     "immutable": "4",
     "papaparse": "5"
