@@ -8,7 +8,7 @@ before_script:
   - npx eslint --ext ts --max-warnings 0 .
 script:
   - npx ng build
-  - npx ng build --prod
+  - npx ng build --configuration production
 after_success:
   - set -e
   - out=`git status --porcelain`; [ -z "$out" ] || ( git diff; exit 1 )
