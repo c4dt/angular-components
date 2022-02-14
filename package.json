@@ -36,6 +36,7 @@
     "codelyzer": "6",
     "eslint": "8",
     "eslint-config-prettier": "8",
+    "eslint-plugin-prettier": "4",
     "jasmine-core": "4",
     "jasmine-spec-reporter": "7",
     "karma": "6",
@@ -44,6 +45,7 @@
     "karma-jasmine": "4",
     "karma-jasmine-html-reporter": "1",
     "ng-packagr": "13",
+    "prettier": "2",
     "ts-node": "10",
     "typescript": "4"
   }
