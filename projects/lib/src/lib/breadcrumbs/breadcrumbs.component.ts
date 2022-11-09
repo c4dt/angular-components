@@ -14,6 +14,6 @@ export class BreadcrumbsComponent {
 
   public readonly baseBreadCrumbs: List<BreadCrumb> = List.of(
     { label: 'Factory', link: new URL('https://factory.c4dt.org/') },
-    { label: 'Incubator', link: new URL('https://factory.c4dt.org/incubator') }
+    { label: 'Showcase', link: new URL('https://factory.c4dt.org/showcase') }
   );
 }
