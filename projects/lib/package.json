@@ -1,6 +1,6 @@
 {
   "name": "@c4dt/angular-components",
-  "version": "4.0.0",
+  "version": "5.0.0",
   "peerDependencies": {
     "@angular/common": "14",
     "@angular/cdk": "14",
